@@ -1,0 +1,341 @@
+
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Babeltime.CSharpLib.Sys;
+using Babeltime.DB.Consts;
+using Babeltime.DB.Database;
+using Babeltime.DB.GameData;
+using Babeltime.DB.GameUtils;
+using Babeltime.DB.Modules.Fight;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+namespace Babeltime.DB.Managers
+{
+    public class ScenesManager
+    {
+        private AssetBundle lastBundle;
+
+        private static ScenesManager ins = new ScenesManager();
+        public static ScenesManager Ins => ins;
+
+        private ScenesManager()
+        {
+        }
+
+        private DeviceLevel LoadLevel = DeviceLevel.High;   //加载该场景的品质，因为有的场景可能不切分，所以不一定会有三个等级
+        private const string lightMapPath = @"Assets/GameResources/lightMaping/";   //与lightMapping相关的路径
+        private const string sceneBasePath = @"Assets/GameResources/scene/";        //场景的父路径
+        private int current = 0;
+        private int preSceneId = 0;
+        private List<Texture2D> assetTextDatas = new List<Texture2D>();  //加载的shadowmask名字
+        public int PreSceneId => preSceneId; // 上一个场景id
+        public int CurSceneId => current; // 当前场景id
+
+        private List<string> shadowMaskPath = new List<string>();   //加载的shadowmask的名字
+        private List<string> lastShadowMaskPath = new List<string>();   //加载的shadowmask的名字
+
+        private Light sceneLight;
+        private bool LoadAsset(int sceneID)
+        {
+            SceneDatabaseReaderDto sceneDatabase = SceneReader.Ins.GetRowById(sceneID);
+            var path = $"{lightMapPath}assetData/{sceneDatabase.SceneSetting}.asset";
+            bool hasAsset = AssetManager.Ins.HasBundle(path);
+            shadowMaskPath.Clear();
+            if (hasAsset)
+            {
+                var lightMapDataAsset = AssetManager.Ins.GetAsset<LightMapDataAsset>(path);
+                if (lightMapDataAsset != null)
+                {
+                    List<string> shadowMaskName;
+                    assetTextDatas.Clear();
+                    DeviceLevel level = GameQualityUtil.myDeviceLevel;
+                    string shadowDocName = ""; //shadowmask的图片所在文件夹名字后缀
+                    switch (level)
+                    {
+                        case DeviceLevel.Low:
+                            LoadLevel = DeviceLevel.Low;
+                            break;
+                        case DeviceLevel.Middle:
+                            LoadLevel = lightMapDataAsset.levels.Count > 1 ? DeviceLevel.Middle : DeviceLevel.Low;
+                            break;
+                        case DeviceLevel.High:
+                            LoadLevel = lightMapDataAsset.levels.Count > 2 ? DeviceLevel.High : lightMapDataAsset.levels.Count > 1 ? DeviceLevel.Middle : DeviceLevel.Low;
+                            break;
+                    }
+                    switch (LoadLevel)
+                    {
+                        case DeviceLevel.Low:
+                            shadowMaskName = lightMapDataAsset.lowDatas;
+                            shadowDocName = lightMapDataAsset.levels[0];
+                            break;
+                        case DeviceLevel.Middle:
+                            shadowMaskName = lightMapDataAsset.middleDatas;
+                            shadowDocName = lightMapDataAsset.levels[1];
+                            break;
+                        case DeviceLevel.High:
+                            shadowMaskName = lightMapDataAsset.highDatas;
+                            shadowDocName = lightMapDataAsset.levels[2];
+                            break;
+                        default:
+                            shadowMaskName = lightMapDataAsset.lowDatas;
+                            shadowDocName = lightMapDataAsset.levels[0];
+                            break;
+                    }
+                    for (int i = 0; i < shadowMaskName.Count; i++)
+                    {
+                        string imgPath = $"{lightMapPath}{sceneDatabase.SceneSetting}/{sceneDatabase.SceneSetting}{shadowDocName}/{shadowMaskName[i]}.png";
+                        shadowMaskPath.Add(imgPath);
+                        var texture = AssetManager.Ins.GetAsset<Texture2D>(imgPath);
+                        assetTextDatas.Add(texture);
+                    }
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        /// <summary>
+        /// 上个场景的assetBundle资源
+        /// </summary>
+        private List<string> lastSceneBundleName = new List<string>();
+
+        /// <summary>
+        /// 当前场景加载的assetBundle资源
+        /// </summary>
+        private List<string> nowSceneBundleName = new List<string>();
+
+
+        public void LoadScene(int sceneId, Action callback)
+        {
+            var sceneDto = SceneReader.Ins.GetRowById(sceneId);
+            bool isSplit = LoadAsset(sceneId);
+            if (isSplit && string.IsNullOrEmpty(sceneDto.LowName))
+            {
+                BtLogger.LogError($"场景：{sceneId} 的lowName为null，场景的lowName必须存在，需要处理！！！！！！");
+            }
+            nowSceneBundleName.Clear();
+            Action loadSceneAbEndCallback = () =>
+            {
+                if (sceneDto.Id == current)
+                {
+                    callback?.Invoke();
+                    return;
+                }
+                preSceneId = current;
+                current = sceneDto.Id;
+                ManagerCenter.Coroutine.StartRun(Load(sceneDto, isSplit, callback));
+            };
+            if (isSplit)
+            {
+                switch (LoadLevel)
+                {
+                    case DeviceLevel.Low:
+                        nowSceneBundleName.Add($"{sceneBasePath}{sceneDto.LowName}.unity");
+                        LoadSceneAb(nowSceneBundleName, loadSceneAbEndCallback);
+                        break;
+                    case DeviceLevel.Middle:
+                        nowSceneBundleName.Add($"{sceneBasePath}{sceneDto.LowName}.unity");
+                        if (!string.IsNullOrEmpty(sceneDto.MiddleName))
+                            nowSceneBundleName.Add($"{sceneBasePath}{sceneDto.MiddleName}.unity");
+                        LoadSceneAb(nowSceneBundleName, loadSceneAbEndCallback);
+                        break;
+                    case DeviceLevel.High:
+                        nowSceneBundleName.Add($"{sceneBasePath}{sceneDto.LowName}.unity");
+                        if (!string.IsNullOrEmpty(sceneDto.MiddleName))
+                            nowSceneBundleName.Add($"{sceneBasePath}{sceneDto.MiddleName}.unity");
+                        if (!string.IsNullOrEmpty(sceneDto.HighName))
+                            nowSceneBundleName.Add($"{sceneBasePath}{sceneDto.HighName}.unity");
+                        LoadSceneAb(nowSceneBundleName, loadSceneAbEndCallback);
+                        break;
+                }
+            }
+            else
+            {
+                nowSceneBundleName.Add($"{sceneBasePath}{sceneDto.SceneSetting}.unity");
+                LoadSceneAb(nowSceneBundleName, loadSceneAbEndCallback);
+            }
+
+
+        }
+
+        private IEnumerator Load(SceneDatabaseReaderDto sceneData, bool isSplit, Action callback)
+        {
+            AsyncOperation a = SceneManager.LoadSceneAsync($"Assets/Main/Empty.unity", LoadSceneMode.Single);
+            //            async.allowSceneActivation = false;
+            while (!a.isDone)
+            {
+                yield return null;
+            }
+            if (isSplit)
+            {
+                switch (LoadLevel)
+                {
+                    case DeviceLevel.Low:
+                        AsyncOperation async = SceneManager.LoadSceneAsync($"{sceneData.LowName}", LoadSceneMode.Single);
+                        while (!async.isDone)
+                        {
+                            BtLogger.Log($"ScenesManager Load progress:{sceneData.LowName},{async.progress}");
+                            yield return null;
+                        }
+
+                        break;
+                    case DeviceLevel.Middle:
+                        async = SceneManager.LoadSceneAsync($"{sceneData.LowName}", LoadSceneMode.Single);
+                        while (!async.isDone)
+                        {
+                            BtLogger.Log($"ScenesManager Load progress:{sceneData.LowName},{async.progress}");
+                            yield return null;
+                        }
+                        if (!string.IsNullOrEmpty(sceneData.MiddleName))
+                        {
+                            async = SceneManager.LoadSceneAsync($"{sceneData.MiddleName}", LoadSceneMode.Additive);
+                            while (!async.isDone)
+                            {
+                                BtLogger.Log($"ScenesManager Load progress:{sceneData.MiddleName},{async.progress}");
+                                yield return null;
+                            }
+                        }
+                        break;
+                    case DeviceLevel.High:
+                        async = SceneManager.LoadSceneAsync($"{sceneData.LowName}", LoadSceneMode.Single);
+                        while (!async.isDone)
+                        {
+                            BtLogger.Log($"ScenesManager Load progress:{sceneData.LowName},{async.progress}");
+                            yield return null;
+                        }
+                        if (!string.IsNullOrEmpty(sceneData.MiddleName))
+                        {
+                            async = SceneManager.LoadSceneAsync($"{sceneData.MiddleName}", LoadSceneMode.Additive);
+                            while (!async.isDone)
+                            {
+                                BtLogger.Log($"ScenesManager Load progress:{sceneData.MiddleName},{async.progress}");
+                                yield return null;
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(sceneData.HighName))
+                        {
+                            async = SceneManager.LoadSceneAsync($"{sceneData.HighName}", LoadSceneMode.Additive);
+                            while (!async.isDone)
+                            {
+                                BtLogger.Log($"ScenesManager Load progress:{sceneData.HighName},{async.progress}");
+                                yield return null;
+                            }
+                        }
+                        break;
+                }
+                ChangShadowMask();
+            }
+            else
+            {
+                AsyncOperation async = SceneManager.LoadSceneAsync(sceneData.SceneSetting, LoadSceneMode.Single);
+                //            async.allowSceneActivation = false;
+                while (!async.isDone)
+                {
+
+                    BtLogger.Log($"ScenesManager Load progress:{sceneData.SceneSetting},{async.progress}");
+                    yield return null;
+                }
+            }
+            LoadSceneWall(sceneData);
+            BTPostProcessManager.inst.DeleteProfile(EPostProcessType.RunningMap);
+            BTPostProcessManager.inst.CreateProfile(sceneData.Postprocess, EPostProcessType.RunningMap);
+            callback?.Invoke();
+            UnLoadLastSceneAB();
+            GetSceneLight(sceneData);
+        }
+
+        private void GetSceneLight(SceneDatabaseReaderDto sceneData)
+        {
+            GameObject lightGo = GameObject.Find(/*$"{sceneData.LowName}/light/realtime_mix/Directional Light"*/"Directional Light");
+            if (lightGo != null)
+            {
+                sceneLight = (Light)lightGo.GetComponent(typeof(Light));
+                if (FightUtil.Ins.IsFighting) // TODO 测试
+                {
+                    var cullingMask = sceneLight.cullingMask;
+                    cullingMask &= ~(1 << LayerConst.Player);
+                    cullingMask &= ~(1 << LayerConst.Enemy);
+                    sceneLight.cullingMask = cullingMask;
+                }
+                else
+                {
+                    var cullingMask = sceneLight.cullingMask;
+                    cullingMask |= (1 << LayerConst.Player);
+                    sceneLight.cullingMask = cullingMask;
+                }
+            }
+            else
+                BtLogger.LogError($"找不到场景灯光");
+        }
+
+        private void LoadSceneWall(SceneDatabaseReaderDto sceneData)
+        {
+            if (sceneData.SceneWall != 0)
+            {
+                var sceneWall = ManagerCenter.Reference.GetGameObject(sceneData.SceneWall).GetInstance();
+                sceneWall.transform.position = Vector3.zero;
+                sceneWall.transform.eulerAngles = Vector3.zero;
+                sceneWall.transform.localScale = Vector3.one;
+            }
+        }
+        private void LoadSceneAb(List<string> pathList, Action callback)
+        {
+            AssetManager.Ins.PreLoadSceneSync(pathList, callback);
+
+        }
+        /// <summary>
+        /// 卸载上个场景的ab包
+        /// 经过测试，由于场景ab包没有引用计数，切换场景时GC会自动清除没有被引用的场景assetbundle
+        /// </summary>
+        private void UnLoadLastSceneAB()
+        {
+            foreach (var item in lastSceneBundleName)
+            {
+                AssetManager.Ins.UnLoadSceneBundle(item);
+            }
+            lastSceneBundleName.Clear();
+            lastSceneBundleName.AddRange(nowSceneBundleName);
+            Resources.UnloadUnusedAssets();
+
+            foreach (var item in lastShadowMaskPath)
+            {
+                BundleManager.Ins.RemoveAsset(item.ToLower());
+            }
+            lastShadowMaskPath.Clear();
+            lastShadowMaskPath.AddRange(shadowMaskPath);
+            ReferenceManager.Ins.UnloadAssetsAndBundles();
+        }
+
+        //替换shadowmask
+        private void ChangShadowMask()
+        {
+            LightmapData[] datas = new LightmapData[LightmapSettings.lightmaps.Length];
+            for (int i = 0; i < LightmapSettings.lightmaps.Length; i++)
+            {
+                LightmapData data = new LightmapData();
+                data.lightmapColor = LightmapSettings.lightmaps[i].lightmapColor;
+                data.lightmapDir = LightmapSettings.lightmaps[i].lightmapDir;
+                if (assetTextDatas.Count > i)
+                {
+                    data.shadowMask = assetTextDatas[i];
+                }
+                else
+                {
+                    data.shadowMask = LightmapSettings.lightmaps[i].shadowMask;
+                }
+                datas[i] = data;
+            }
+
+            LightmapSettings.lightmaps = datas;
+        }
+
+        public void ShowSceneLight(bool isShow)
+        {
+            if (sceneLight != null)
+                sceneLight.enabled = isShow;
+        }
+    }
+}

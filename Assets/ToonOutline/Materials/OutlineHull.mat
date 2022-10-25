@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: OutlineHull
+  m_Shader: {fileID: 4800000, guid: 9ce107479d11178d11005b9844295342, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _ILMTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SSSTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ToonShade:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _DarkenInnerLine: 0.2
+    - _DstBlend: 0
+    - _ModelScale: 1
+    - _Outline: 0.002
+    - _RimOffset: 0.24
+    - _RimPower: 0.9
+    - _ShadowContrast: 0.2
+    - _ShadowEnhance: 0.5
+    - _ShadowOffset: 0.2
+    - _Shininess: 0.2
+    - _SpecStep: 0.3
+    - _SrcBlend: 1
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _TimeDelay: 0
+    - _TimeScale: 1
+    m_Colors:
+    - _BrightColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CharLightColorInScene: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _ColorToMulti: {r: 1, g: 1, b: 1, a: 1}
+    - _Direction: {r: 0, g: 0, b: 0, a: 0}
+    - _OutlineColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _RimColor: {r: 0, g: 1, b: 0.8758622, a: 0}
+    - _ShadowColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []

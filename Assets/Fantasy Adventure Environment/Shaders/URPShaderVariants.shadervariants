@@ -1,0 +1,371 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!200 &20000000
+ShaderVariantCollection:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: URPShaderVariants
+  m_Shaders:
+  - first: {fileID: 4800000, guid: c17132b1f77d20942aa75f8429c0f8bc, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: d6dae50ee9e1bfa4db75f19f99355220, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK UNITY_HDR_ON
+          _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+          _USE_CHAR_LIGHT_COLOR
+        passType: 0
+  - first: {fileID: 4800000, guid: 65df88701913c224d95fc554db28381a, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: e7857e9d0c934dc4f83f270f8447b006, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: 1a013c8d5b8491645a3429303c201a26, type: 3}
+    second:
+      variants:
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX
+        passType: 8
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX
+        passType: 13
+  - first: {fileID: 4800000, guid: 1a5edb79084533a4f8a9c2a46ad5e74e, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: 1d912651f03fd1f438af49d7aecdf91c, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: SHADOWS_DEPTH
+        passType: 8
+      - keywords: DIRECTIONAL
+        passType: 13
+      - keywords: DIRECTIONAL LIGHTPROBE_SH
+        passType: 13
+      - keywords: DIRECTIONAL FOG_LINEAR LIGHTPROBE_SH
+        passType: 13
+      - keywords: DIRECTIONAL FOG_LINEAR LIGHTPROBE_SH SHADOWS_SHADOWMASK _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: DIRECTIONAL LIGHTPROBE_SH _AdditionalLights
+        passType: 13
+      - keywords: DIRECTIONAL FOG_LINEAR LIGHTPROBE_SH _AdditionalLights
+        passType: 13
+      - keywords: DIRECTIONAL FOG_LINEAR LIGHTPROBE_SH SHADOWS_SHADOWMASK _AdditionalLights
+          _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: 
+        passType: 14
+  - first: {fileID: 4800000, guid: 1e36dfca605fba6499e6817389a06b01, type: 3}
+    second:
+      variants:
+      - keywords: FOG_EXP _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK UNITY_HDR_ON
+          _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+          _USE_CHAR_LIGHT_COLOR
+        passType: 13
+  - first: {fileID: 4800000, guid: 1e8a610c9e01c3648bac42585e5fc676, type: 3}
+    second:
+      variants:
+      - keywords: _USE8NEIGHBOURHOOD_ON
+        passType: 8
+  - first: {fileID: 4800000, guid: 323d67b0d8163704f9edc095a1173040, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: 332d0d2fb98c0bf44a40715a19b2905f, type: 3}
+    second:
+      variants:
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON LOD_FADE_CROSSFADE _ADDITIONAL_LIGHTS
+          _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP INSTANCING_ON LIGHTMAP_ON _ADDITIONAL_LIGHTS
+          _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON
+          LIGHTPROBE_SH SHADOWS_SHADOWMASK _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE _USE_CHAR_LIGHT_COLOR
+        passType: 13
+  - first: {fileID: 4800000, guid: 3482be9ac99c4614db3f9e859ed6b95b, type: 3}
+    second:
+      variants:
+      - keywords: FOG_EXP _TOGGLETURBULENCE
+        passType: 0
+      - keywords: FOG_EXP _RENDERING_DISSOLVE _TOGGLETURBULENCE
+        passType: 0
+      - keywords: FOG_EXP _RENDERING_UVANIMATION _TOGGLETURBULENCE
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP LIGHTPROBE_SH SHADOWS_SHADOWMASK
+          UNITY_HDR_ON ZWrite _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE _USE_CHAR_LIGHT_COLOR
+        passType: 0
+  - first: {fileID: 4800000, guid: 38c24639a2ae9f642aa41d7cb53a607e, type: 3}
+    second:
+      variants:
+      - keywords: DIRECTIONAL
+        passType: 4
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK _ADDITIONAL_LIGHTS
+          _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _SUNDISK_HIGH_QUALITY
+          _USE_CHAR_LIGHT_COLOR
+        passType: 4
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK UNITY_HDR_ON
+          _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+          _SUNDISK_HIGH_QUALITY _USE_CHAR_LIGHT_COLOR
+        passType: 4
+  - first: {fileID: 4800000, guid: 3da98685071421b4d8d4f2a4c854d305, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+      - keywords: FOG_EXP
+        passType: 0
+  - first: {fileID: 4800000, guid: 456a96ef22c5f494db8f3f42751d051e, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: FOG_EXP
+        passType: 8
+      - keywords: INSTANCING_ON
+        passType: 8
+      - keywords: FOG_EXP INSTANCING_ON
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK _ADDITIONAL_LIGHTS
+          _DEPTH_NO_MSAA _USE_CHAR_LIGHT_COLOR
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP LOD_FADE_CROSSFADE SHADOWS_SHADOWMASK
+          UNITY_HDR_ON _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _USE_CHAR_LIGHT_COLOR
+        passType: 8
+      - keywords: FOG_EXP
+        passType: 13
+      - keywords: FOG_EXP _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON LOD_FADE_CROSSFADE _ADDITIONAL_LIGHTS
+          _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP INSTANCING_ON LIGHTMAP_ON _ADDITIONAL_LIGHTS
+          _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON
+          SHADOWS_SHADOWMASK _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE _USE_CHAR_LIGHT_COLOR
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP LIGHTPROBE_SH SHADOWS_SHADOWMASK
+          _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+          _USE_CHAR_LIGHT_COLOR
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK UNITY_HDR_ON
+          _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+          _USE_CHAR_LIGHT_COLOR
+        passType: 13
+  - first: {fileID: 4800000, guid: 46e96e86b41ee774c8428c0896cd41b2, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: 499d4667d8f7d0b47ae6c5f4f804e31e, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: FOG_EXP
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK _ADDITIONAL_LIGHTS
+          _DEPTH_NO_MSAA _USE_CHAR_LIGHT_COLOR
+        passType: 8
+      - keywords: FOG_EXP
+        passType: 13
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON SHADOWS_SHADOWMASK _ADDITIONAL_LIGHTS
+          _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON
+          LIGHTPROBE_SH SHADOWS_SHADOWMASK _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE _USE_CHAR_LIGHT_COLOR
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK UNITY_HDR_ON
+          _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+          _USE_CHAR_LIGHT_COLOR
+        passType: 13
+  - first: {fileID: 4800000, guid: 4e923ccb8e9e00643bc6127460e918ad, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: FOG_EXP
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK _ADDITIONAL_LIGHTS
+          _DEPTH_NO_MSAA _USE_CHAR_LIGHT_COLOR
+        passType: 8
+      - keywords: GEOM_TYPE_LEAF INSTANCING_ON _ALPHATEST_ON _USESPEEDTREEWIND_ON
+        passType: 8
+      - keywords: FOG_EXP
+        passType: 13
+      - keywords: FOG_EXP _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK UNITY_HDR_ON
+          _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+          _USE_CHAR_LIGHT_COLOR
+        passType: 13
+  - first: {fileID: 4800000, guid: 563966283cd21ea4bb501362d277d702, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: 7c9f6c5f3a827984295869893483eb4d, type: 3}
+    second:
+      variants:
+      - keywords: INSTANCING_ON _INVERTCOORDINATES_ON _USESCRIPTREFLECTION_ON _USESPECULARGLOSS_ON
+        passType: 8
+      - keywords: DIRECTIONAL FOG_EXP INSTANCING_ON LIGHTPROBE_SH SHADOWS_SHADOWMASK
+        passType: 13
+  - first: {fileID: 4800000, guid: 83300dd6251b49e4aae02a0b6e8a1ad5, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: FOG_EXP
+        passType: 8
+      - keywords: FOG_EXP LOD_FADE_CROSSFADE
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK UNITY_HDR_ON
+          _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _USE_CHAR_LIGHT_COLOR
+        passType: 8
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON LOD_FADE_CROSSFADE _ADDITIONAL_LIGHTS
+          _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+  - first: {fileID: 4800000, guid: 85827a98514358f438446da0fc64b0f5, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: INSTANCING_ON
+        passType: 8
+      - keywords: FOG_EXP _ADDITIONAL_LIGHTS
+        passType: 8
+      - keywords: FOG_EXP INSTANCING_ON _ADDITIONAL_LIGHTS
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK UNITY_HDR_ON
+          _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _USE_CHAR_LIGHT_COLOR
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP INSTANCING_ON SHADOWS_SHADOWMASK
+          _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _USE_CHAR_LIGHT_COLOR
+        passType: 8
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: FOG_EXP INSTANCING_ON _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP INSTANCING_ON LIGHTMAP_ON _ADDITIONAL_LIGHTS
+          _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DIRLIGHTMAP_COMBINED FOG_EXP INSTANCING_ON
+          LIGHTMAP_ON SHADOWS_SHADOWMASK _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE _USE_CHAR_LIGHT_COLOR
+        passType: 13
+  - first: {fileID: 4800000, guid: 979b5c73f8c6c624b882e88d2d1904b8, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: 9e9f78de11771ba4581992f8a02a3345, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX
+        passType: 8
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX
+        passType: 13
+  - first: {fileID: 4800000, guid: a25cf6807139891489d32a4c870e603f, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: b8def3de2eb7556419cf1f48c58aad59, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: cac1bc7aad1893040b840d442ab8911a, type: 3}
+    second:
+      variants:
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP LIGHTMAP_ON _ADDITIONAL_LIGHTS _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: DIRLIGHTMAP_COMBINED FOG_EXP INSTANCING_ON LIGHTMAP_ON _ADDITIONAL_LIGHTS
+          _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DIRLIGHTMAP_COMBINED FOG_EXP INSTANCING_ON
+          LIGHTMAP_ON SHADOWS_SHADOWMASK _ADDITIONAL_LIGHTS _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS
+          _MAIN_LIGHT_SHADOWS_CASCADE _USE_CHAR_LIGHT_COLOR
+        passType: 13
+  - first: {fileID: 4800000, guid: dc26005cc2ad96b45918d8797b398ff0, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: e27c26c0ecebef247ba69245490f2562, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: 
+        passType: 11
+      - keywords: 
+        passType: 13
+  - first: {fileID: 4800000, guid: ecdd0d68bd82e5c4f8d21cb13ee07923, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 13
+  - first: {fileID: 4800000, guid: fd3c6a04076a54c4cb5a3284d070132e, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS FOG_EXP SHADOWS_SHADOWMASK _ADDITIONAL_LIGHTS
+          _DEPTH_NO_MSAA _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _USE_CHAR_LIGHT_COLOR
+        passType: 0
+  - first: {fileID: 4800000, guid: b2f45941d9f4fe9479ce1aebb9d63fbf, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+  - first: {fileID: 9103, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0

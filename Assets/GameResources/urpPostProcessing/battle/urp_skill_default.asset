@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8913480054203199580
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15c8ee7426146c5929fac25d982498e, type: 3}
+  m_Name: UrpBlueRing
+  m_EditorClassIdentifier: 
+  active: 0
+  enableEffect:
+    m_OverrideState: 0
+    m_Value: 0
+  waveTex:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
+    dimension: 1
+  waveIntensity:
+    m_OverrideState: 0
+    m_Value: 0.25
+  cb3_0:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
+  cb4_3:
+    m_OverrideState: 0
+    m_Value: {r: 0.073, g: 0.057, b: 1, a: 0}
+  cb4_4:
+    m_OverrideState: 0
+    m_Value: {r: 0.302, g: 0.442, b: 1, a: 0}
+  cb4_24:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 0.22, z: 1, w: 1}
+  cb4_25:
+    m_OverrideState: 0
+    m_Value: {x: 0.5, y: -0.42, z: 4.42, w: 0}
+--- !u!114 &-8674131626251896887
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
+  m_Name: Bloom
+  m_EditorClassIdentifier: 
+  active: 1
+  threshold:
+    m_OverrideState: 1
+    m_Value: 1.4
+  intensity:
+    m_OverrideState: 1
+    m_Value: 2.3
+  scatter:
+    m_OverrideState: 0
+    m_Value: 0.7
+  clamp:
+    m_OverrideState: 0
+    m_Value: 65472
+  tint:
+    m_OverrideState: 0
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  highQualityFiltering:
+    m_OverrideState: 0
+    m_Value: 0
+  skipIterations:
+    m_OverrideState: 0
+    m_Value: 1
+  dirtTexture:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
+    dimension: 1
+  dirtIntensity:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: urp_skill_default
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -8674131626251896887}
+  - {fileID: 2342101127928234238}
+  - {fileID: -8913480054203199580}
+--- !u!114 &2342101127928234238
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5f74f7972b18a744ae3bc1b1da3c2b7, type: 3}
+  m_Name: UrpBlur
+  m_EditorClassIdentifier: 
+  active: 1
+  enableEffect:
+    m_OverrideState: 1
+    m_Value: 1
+  iterationTimes:
+    m_OverrideState: 1
+    m_Value: 1
+  blurEffect:
+    m_OverrideState: 1
+    m_Value: 7
+  saturation:
+    m_OverrideState: 0
+    m_Value: 1
+  extraColor:
+    m_OverrideState: 0
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
