@@ -32,9 +32,10 @@ namespace GameOldBoy.Rendering
 
         Dictionary<int, HaltonSequence> haltonSequences = new Dictionary<int, HaltonSequence>();
 
+        //加载shader，创建 TAAPass 和 2个TAACameraPass
         public override void Create()
         {
-#if UNITY_EDITOR
+#if UNITY_EDITOR  //如果不在Editor模式下，这个脚本似乎无法获取到shader 
             foreach (var guid in AssetDatabase.FindAssets("TAA t:Shader"))
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
@@ -96,6 +97,10 @@ namespace GameOldBoy.Rendering
             }
         }
 
+        //renderFeatrue的一大作用就是向当前工作的render注入renderPass(一个或多个) 
+        //每一帧都调用 
+        //该方法对TAAPass和TAACamPass进行setup，然后灌入render渲染队列中 
+        //期间创建了用于偏移摄像机的 HaltonSequence 队列 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             var camera = renderingData.cameraData.camera;
@@ -152,10 +157,10 @@ namespace GameOldBoy.Rendering
                         (offsetX - 0.5f) / descriptor.width,
                         (offsetY - 0.5f) / descriptor.height);
 
-                    if (WorkOnPrepass)
+                    if (WorkOnPrepass)  //这货默认是false -> 在更早前执行，为何？ 
                     {
-                        m_TAACameraPrepass.Setup(matrix);
-                        renderer.EnqueuePass(m_TAACameraPrepass);
+                        m_TAACameraPrepass.Setup(matrix);  //导入相机的投影矩阵(带有微小偏移) 
+                        renderer.EnqueuePass(m_TAACameraPrepass);  //加入到render渲染队列中 
                     }
                     m_TAACameraPass.Setup(matrix);
                     renderer.EnqueuePass(m_TAACameraPass);
@@ -166,18 +171,18 @@ namespace GameOldBoy.Rendering
                         material,
                         haltonSequence.prevViewProj,
                         offset,
-                        taa,
+                        taa,             //这是挂在camera上的脚步 
                         UseMotionVector,
-                        RenderingMode);
+                        RenderingMode);  //RenderingMode -> 默认为 Forward 
                     renderer.EnqueuePass(m_TAAPass);
 
-                    haltonSequence.prevViewProj = viewProj;
-                    haltonSequence.frameCount = Time.frameCount;
+                    haltonSequence.prevViewProj = viewProj;      //更新上一帧的偏移后VP矩阵 
+                    haltonSequence.frameCount = Time.frameCount; //更新帧计数 
                     haltonSequences[hash] = haltonSequence;
                 }
             }
 
-            if (haltonSequences.Count > 0)
+            if (haltonSequences.Count > 0)  //清除掉连续10帧没有更新的摄像机对应数据( haltonSequence ) 
             {
                 //Span<int> rmArr = stackalloc int[8];
                 int[] rmArr = new int[8];
