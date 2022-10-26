@@ -223,58 +223,50 @@ Shader "FAE/GrassDepth"
         float WindStrength522 = _WindStrength;
         float3 ase_worldPos = mul( unity_ObjectToWorld, IN.positionOS );
         float2 appendResult469 = (float2(_WindDirection.x , _WindDirection.z));
-        float3 WindVector91 = UnpackNormal(
-                SAMPLE_TEXTURE2D_LOD(
-                    _WindVectors, 
-                    sampler_WindVectors,
-                    ( ( ( (ase_worldPos).xz * 0.01 ) * _WindAmplitudeMultiplier * _WindAmplitude ) + ( ( ( _WindSpeed * 0.05 ) * _Time.w ) * appendResult469 ) ).xy,
-                    0
-                ) 
-            );
+        float3 WindVector91 = UnpackNormal(SAMPLE_TEXTURE2D_LOD( _WindVectors, sampler_WindVectors, ( ase_worldPos.xz * 0.01 * _WindAmplitudeMultiplier * _WindAmplitude  + _WindSpeed * 0.05  * _Time.w * appendResult469 ).xy, 0));
         float3 break277 = WindVector91;
-        float3 appendResult495 = (float3(break277.x , 0.0 , break277.y));
+        float3 appendResult495 = (float3(break277.x, 0.0, break277.y));
         float3 temp_cast_0 = (-1.0).xxx;
-        float3 lerpResult249 = lerp( (float3( 0,0,0 ) + (appendResult495 - temp_cast_0) * (float3( 1,1,0 ) - float3( 0,0,0 )) / (float3( 1,1,0 ) - temp_cast_0)) , appendResult495 , _WindSwinging);
-        float3 lerpResult74 = lerp( ( ( _MaxWindStrength * WindStrength522 ) * lerpResult249 ) , float3( 0,0,0 ) , ( 1.0 - IN.color.r ));
+        float3 lerpResult249 = lerp((float3(0, 0, 0) + (appendResult495 - temp_cast_0) * (float3(1, 1, 0) - float3(0, 0, 0)) / (float3(1, 1, 0) - temp_cast_0)), appendResult495, _WindSwinging);
+        float3 lerpResult74 = lerp(((_MaxWindStrength * WindStrength522) * lerpResult249), float3(0, 0, 0), (1.0 - IN.color.r));
         float3 Wind84 = lerpResult74;
         float3 temp_output_571_0 = (_ObstaclePosition).xyz;
-        float3 normalizeResult184 = normalize( ( temp_output_571_0 - ase_worldPos ) );
-        float temp_output_186_0 = ( _BendingStrength * 0.1 );
-        float3 appendResult468 = (float3(temp_output_186_0 , 0.0 , temp_output_186_0));
-        float clampResult192 = clamp( ( distance( temp_output_571_0 , ase_worldPos ) / _BendingRadius ) , 0.0 , 1.0 );
-        float3 Bending201 = ( IN.color.r * -( ( ( normalizeResult184 * appendResult468 ) * ( 1.0 - clampResult192 ) ) * _BendingInfluence ) );
-        float3 temp_output_203_0 = ( Wind84 + Bending201 );
-        float2 appendResult483 = (float2(_TerrainUV.z , _TerrainUV.w));
-        float2 TerrainUV324 = ( ( ( 1.0 - appendResult483 ) / _TerrainUV.x ) + ( ( _TerrainUV.x / ( _TerrainUV.x * _TerrainUV.x ) ) * (ase_worldPos).xz ) );
-        float4 PigmentMapTex320 = SAMPLE_TEXTURE2D_LOD(
-         _PigmentMap,
-         sampler_PigmentMap,
-          float4( TerrainUV324, 0, 1.0).xy,
-          1
-         );
+        float3 normalizeResult184 = normalize((temp_output_571_0 - ase_worldPos));
+        float temp_output_186_0 = (_BendingStrength * 0.1);
+        float3 appendResult468 = (float3(temp_output_186_0, 0.0, temp_output_186_0));
+        float clampResult192 = clamp((distance(temp_output_571_0, ase_worldPos) / _BendingRadius), 0.0, 1.0);
+        float3 Bending201 = (IN.color.r * -(((normalizeResult184 * appendResult468) * (1.0 - clampResult192)) * _BendingInfluence));
+        float3 temp_output_203_0 = (Wind84 + Bending201);
+        float2 appendResult483 = (float2(_TerrainUV.z, _TerrainUV.w));
+        float2 TerrainUV324 = (((1.0 - appendResult483) / _TerrainUV.x) + ((_TerrainUV.x / (_TerrainUV.x * _TerrainUV.x)) * (ase_worldPos).xz));
+        float4 PigmentMapTex320 = SAMPLE_TEXTURE2D_LOD(_PigmentMap, sampler_PigmentMap, TerrainUV324, 1.0);
         float temp_output_467_0 = (PigmentMapTex320).a;
         float Heightmap518 = temp_output_467_0;
         float PigmentMapInfluence528 = _PigmentMapInfluence;
-        float3 lerpResult508 = lerp( temp_output_203_0 , ( temp_output_203_0 * Heightmap518 ) , PigmentMapInfluence528);
+        float3 lerpResult508 = lerp(temp_output_203_0, temp_output_203_0 * Heightmap518, PigmentMapInfluence528);
         float3 break437 = lerpResult508;
         float3 ase_vertex3Pos = IN.positionOS.xyz;
-        #if (_VS_TOUCHBEND_ON)
-            float staticSwitch659 = TouchReactAdjustVertex(float4( ase_vertex3Pos , 0.0 ).xyz).y;
-        #else
-            float staticSwitch659 = 0.0;
-        #endif
+
+#if (_VS_TOUCHBEND_ON)
+        float staticSwitch659 = TouchReactAdjustVertex(ase_vertex3Pos).y;
+#else
+        float staticSwitch659 = 0.0;
+#endif
+
         float TouchBendPos613 = staticSwitch659;
-        float temp_output_499_0 = ( 1.0 - IN.color.r );
-        float lerpResult344 = lerp( ( saturate( ( ( 1.0 - temp_output_467_0 ) - TouchBendPos613 ) ) * _MinHeight ) , 0.0 , temp_output_499_0);
-        float lerpResult388 = lerp( _MaxHeight , 0.0 , temp_output_499_0);
-        float GrassLength365 = ( ( lerpResult344 * _HeightmapInfluence ) + lerpResult388 );
-        float3 appendResult391 = (float3(break437.x , GrassLength365 , break437.z));
+        float temp_output_499_0 = (1.0 - IN.color.r);
+        float lerpResult344 = lerp((saturate(((1.0 - temp_output_467_0) - TouchBendPos613)) * _MinHeight), 0.0, temp_output_499_0);
+        float lerpResult388 = lerp(_MaxHeight, 0.0, temp_output_499_0);
+        float GrassLength365 = ((lerpResult344 * _HeightmapInfluence) + lerpResult388);
+        float3 appendResult391 = (float3(break437.x, GrassLength365, break437.z));
         float3 VertexOffset330 = appendResult391;
         geometryOutputData.positionOS.xyz += VertexOffset330;
-        // 算挤压
-        geometryOutputData.positionOS = mul(unity_WorldToObject, CalculateTouchBending(mul(unity_ObjectToWorld, geometryOutputData.positionOS),IN.color.x)));
 
-        geometryOutputData.normalOS = float3(0,1,0);
+        // 算挤压
+        geometryOutputData.positionOS = mul(unity_WorldToObject, CalculateTouchBending(mul(unity_ObjectToWorld, geometryOutputData.positionOS), IN.color.x));
+
+        geometryOutputData.normalOS = float3(0, 1, 0);
+
     }
 
     //MOST IMPORTANT: write your surface shader's fragment logic here

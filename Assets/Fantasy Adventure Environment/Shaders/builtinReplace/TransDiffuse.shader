@@ -56,13 +56,13 @@
         o.alpha = c.a;
 
     }
-
+    //Varyings IN, UserSurfaceOutputData surfaceData,  FAELightingData lightingData, inout half4 inputColor
     //IMPORTANT: write your final fragment color edit logic here
     //usually for gameplay logic's color override or darken, like "loop: lerp to red" for selectable targets / flash white on taking damage / darken dead units...
     //you can replace this function by a #include "Your_own_hlsl.hlsl" call, to share this function between different surface shaders
-    void FinalPostProcessFrag(Varyings IN, UserSurfaceOutputData surfaceData, LightingData lightingData, inout half4 inputColor)
+    void FinalPostProcessFrag(Varyings IN, UserSurfaceOutputData surfaceData, FAELightingData lightingData, inout half4 inputColor)
     {
-
+        return;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
