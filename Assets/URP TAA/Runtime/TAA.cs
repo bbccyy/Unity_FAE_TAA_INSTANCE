@@ -265,11 +265,13 @@ namespace GameOldBoy.Rendering
 #endif
             }
 
+            //导入相机的投影矩阵(带有微小偏移) 
             public void Setup(Matrix4x4 matrix)
             {
                 this.matrix = matrix;
             }
 
+            //TAA Cam Pass 的主要功能就是替换原有的 ViewPorject 矩阵 -> 更新为带有微小偏移的 
             public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
             {
 #if UNITY_2020_1_OR_NEWER
@@ -325,6 +327,7 @@ namespace GameOldBoy.Rendering
             bool useMotionVector;
             bool use4Tap;
 
+            //管理 RT_A 和 RT_B 
             class TAATextureSwap
             {
                 public RenderTexture TAATextureA { get; }
@@ -359,6 +362,7 @@ namespace GameOldBoy.Rendering
                     }
                 }
             }
+            
             Dictionary<int, TAATextureSwap> taaTextures = new Dictionary<int, TAATextureSwap>();
 
             int taaPrevViewProj = Shader.PropertyToID("_TAA_PrevViewProj");
@@ -376,6 +380,17 @@ namespace GameOldBoy.Rendering
 #endif
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="renderer">当前摄像机使用的renderer</param>
+            /// <param name="use32Bit"></param>
+            /// <param name="material">TAA 专用全屏渲染材质</param>
+            /// <param name="prevViewProj">上一帧的偏移后VP矩阵</param>
+            /// <param name="offset">屏幕空间偏移 uv </param>
+            /// <param name="taa">对应相机上的TAA脚步，存放了用户settings</param>
+            /// <param name="useMotionVector"></param>
+            /// <param name="renderingMode">一般为Forward</param>
             public void Setup(
                 ScriptableRenderer renderer,
                 bool use32Bit,
@@ -406,6 +421,7 @@ namespace GameOldBoy.Rendering
                 this.useMotionVector = useMotionVector;
                 use4Tap = taa.Use4Tap;
 
+                //要求URP管线为当前Pass提供需要的入参:深度纹理/法线纹理/颜色纹理/Motion纹理等 
 #if UNITY_2021_2_OR_NEWER
                 switch (renderingMode)
                 {
@@ -422,7 +438,7 @@ namespace GameOldBoy.Rendering
                     case RenderingMode.Deferred:
                         if (useMotionVector)
                         {
-                            ConfigureInput(ScriptableRenderPassInput.Motion);
+                            ConfigureInput(ScriptableRenderPassInput.Motion);  //defferred自带了深度纹理 
                         }
                         break;
                 }
