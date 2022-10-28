@@ -460,11 +460,11 @@ namespace GameOldBoy.Rendering
             void allocRT(out RenderTexture rt_a, out RenderTexture rt_b, CommandBuffer cmd, ScriptableRenderContext context, RenderTargetIdentifier rtid, RenderTextureDescriptor descriptor)
             {
                 allocRT(out rt_a, out rt_b, descriptor);
-                cmd.SetGlobalTexture(taaSourceTex, rtid);
-                cmd.SetRenderTarget(rt_a);
-                cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, material, 0, 1);
-                cmd.SetRenderTarget(rt_b);
-                cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, material, 0, 1);
+                cmd.SetGlobalTexture(taaSourceTex, rtid);  //rtid(cameraColorTarget) -> [shader]_SourceTex 
+                cmd.SetRenderTarget(rt_a);  //将当前camera的active rt设置为 rt_a 
+                cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, material, 0, 1); //执行mat的pass_1逻辑(Blit)，渲染到rt_a上 
+                cmd.SetRenderTarget(rt_b);  
+                cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, material, 0, 1); //同样，Blit屏幕颜色到rt_b上 
                 context.ExecuteCommandBuffer(cmd);
                 cmd.Clear();
             }
@@ -496,7 +496,7 @@ namespace GameOldBoy.Rendering
                 var desc = taaTextures[hash].Descriptor;
                 if (desc.width != descriptor.width ||
                     desc.height != descriptor.height ||
-                    desc.colorFormat != descriptor.colorFormat)
+                    desc.colorFormat != descriptor.colorFormat)  //如果有人修改了屏幕尺寸，那么也需要重新绘制起始的rt_ab 
                 {
                     taaTextures[hash].Release();
                     allocRT(out var taaTextureA, out var taaTextureB, cmd, context, rtid, descriptor);
@@ -522,6 +522,7 @@ namespace GameOldBoy.Rendering
                 using (new ProfilingSample(cmd, m_ProfilingSampler))
 #endif
                 {
+                    //主要逻辑：设置shader变量；交替对TAATextureA和TAATextureB进行渲染 
                     var camera = renderingData.cameraData.camera;
                     var cameraColorTarget = renderer.cameraColorTarget;
                     var descriptor = renderingData.cameraData.cameraTargetDescriptor;
@@ -548,13 +549,16 @@ namespace GameOldBoy.Rendering
                     var taaTextureSwap = taaTextures[hash];
                     if (taaTextureSwap.Swap())
                     {
+                        //在 TAATextureA 上实现TAA效果 
                         cmd.SetGlobalTexture(taaSourceTex, cameraColorTarget);
                         material.SetTexture(taaTexture, taaTextureSwap.TAATextureB);
                         cmd.SetRenderTarget(taaTextureSwap.TAATextureA);
                         cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, material, 0, 0);
-                        cmd.SetGlobalTexture(taaSourceTex, taaTextureSwap.TAATextureA);
+
+                        //把 TAATextureA 的颜色拷贝到 cameraColorTarget 
+                        cmd.SetGlobalTexture(taaSourceTex, taaTextureSwap.TAATextureA); 
                         cmd.SetRenderTarget(cameraColorTarget);
-                        cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, material, 0, 1);
+                        cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, material, 0, 1); 
                     }
                     else
                     {

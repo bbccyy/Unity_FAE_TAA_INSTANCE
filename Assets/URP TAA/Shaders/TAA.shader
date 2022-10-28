@@ -1,6 +1,7 @@
 Shader "Hidden/GameOldBoy/TAA"
 {
     HLSLINCLUDE
+        //可以把用户控制的变量转变为宏定义开关，在Csharp端使用CoreUtiuls.SetKeyword(mat, "_Shader_Variant_Name", userInput)来指定，从而创建出不同shader变体 
         #pragma multi_compile_local_fragment _ _TAA_AntiGhosting
         #pragma multi_compile_local_fragment _ _TAA_UseMotionVector
         #pragma multi_compile_local_fragment _ _TAA_UseBlurSharpenFilter
@@ -16,15 +17,18 @@ Shader "Hidden/GameOldBoy/TAA"
         #include "Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/Common.hlsl"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
+        //pass_0的 activeRT是 TextureSwap.RT_A 或 RT_B 
+        //pass_1的 activeRT是 cameraColorTarget 
+
         float4 _CameraDepthTexture_TexelSize;
         TEXTURE2D_X_FLOAT(_MotionVectorTexture);
-        TEXTURE2D_X(_SourceTex);
+        TEXTURE2D_X(_SourceTex);                //cameraColorTarget(每帧初始后，执行pass_1前) 或者 (TextureSwap.RT_B 或 RT_A)
         float4 _SourceTex_TexelSize;
-        TEXTURE2D_X(_TAA_Texture);
+        TEXTURE2D_X(_TAA_Texture);              //TextureSwap.RT_A 或 RT_B 
         float4 _TAA_Texture_TexelSize;
 
-        float4x4 _TAA_PrevViewProj;
-        float2 _TAA_Offset;
+        float4x4 _TAA_PrevViewProj;             //上一帧的偏移后VP矩阵 
+        float2 _TAA_Offset;                     //屏幕空间偏移 -> uv 
         float4 _TAA_Params0;
         #define _TAA_Blend _TAA_Params0.x
         #define _TAA_Gamma _TAA_Params0.y
@@ -47,9 +51,9 @@ Shader "Hidden/GameOldBoy/TAA"
             output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
             output.uv.xy = input.uv;
 
-            float4 projPos = output.positionCS * 0.5;
-            projPos.xy = projPos.xy + projPos.w;
-            output.uv.zw = projPos.xy;
+            float4 projPos = output.positionCS * 0.5;   //将齐次裁剪空间的坐标缩小一倍   -> 这部分可以参考Unity URP postprocessing 目录下的 CameraMotionBlur.shader 
+            projPos.xy = projPos.xy + projPos.w;        //xy现在在[0,Near/Far]区间 -> 对应屏幕UV * (Near/Far) 
+            output.uv.zw = projPos.xy;                  //传递到Frag 
 
             return output;
         }
@@ -173,11 +177,13 @@ Shader "Hidden/GameOldBoy/TAA"
         #endif
         }
 
+        //采样当前像素 
         void get_samples(float2 uv, out float3 _sample)
         {
             _sample = SAMPLE_TEXTURE2D_X(_SourceTex, sampler_PointClamp, uv).rgb;
         }
 
+        //采样9领域像素 
         void get_samples(float2 uv, out float3 samples[9])
         {
             samples[0] = SAMPLE_TEXTURE2D_X(_SourceTex, sampler_PointClamp, uv + _SourceTex_TexelSize.xy * float2(-1, -1)).rgb;
@@ -191,9 +197,12 @@ Shader "Hidden/GameOldBoy/TAA"
             samples[8] = SAMPLE_TEXTURE2D_X(_SourceTex, sampler_PointClamp, uv + _SourceTex_TexelSize.xy * float2( 1,  1)).rgb;
         }
 
+        //入参uv = 当前像素点在上一帧时对应的uv位置 -> prev_uv 
+        //采样上一帧生成的 经过 TAA 处理后的输出纹理 -> _TAA_Texture 
         float3 sample_taa_tex(float2 uv)
         {
         #if _TAA_UseBicubicFilter
+            //TODO: 弄懂所谓 BiCubicFilter的含义 
             float2 samplePos = uv * _TAA_Texture_TexelSize.zw;
             float2 tc1 = floor(samplePos - 0.5) + 0.5;
             float2 f = samplePos - tc1;
@@ -263,6 +272,7 @@ Shader "Hidden/GameOldBoy/TAA"
     #define ZCMP_GT(a, b) (a > b)
     #endif
 
+        //与宏定义 -> _TAA_UseDilation 有关
         float2 find_closest_uv(float depth, float2 uv)
         {
             float2 dd = _CameraDepthTexture_TexelSize.xy;
@@ -296,6 +306,7 @@ Shader "Hidden/GameOldBoy/TAA"
             return uv + dd.xy * dmin.xy;
         }
 
+        //计算当前像素在上一帧中的位置, 返回NDC空间([0,1]范围)的坐标 
         float2 reprojection(float depth, float2 uv)
         {
         #if UNITY_REVERSED_Z
@@ -304,14 +315,15 @@ Shader "Hidden/GameOldBoy/TAA"
 
             depth = 2.0 * depth - 1.0;
 
-            float3 viewPos = ComputeViewSpacePosition(uv, depth, unity_CameraInvProjection);
+            float3 viewPos = ComputeViewSpacePosition(uv, depth, unity_CameraInvProjection);  //uv == positionNDC 
             float4 worldPos = float4(mul(unity_CameraToWorld, float4(viewPos, 1.0)).xyz, 1.0);
 
-            float4 prevClipPos = mul(_TAA_PrevViewProj, worldPos);
-            float2 prevPosCS = prevClipPos.xy / prevClipPos.w;
-            return prevPosCS * 0.5 + 0.5;
+            float4 prevClipPos = mul(_TAA_PrevViewProj, worldPos);  //上一帧"当前像素"处于投影空间中的位置 
+            float2 prevPosCS = prevClipPos.xy / prevClipPos.w;      //转到NDC空间 [-1,1]
+            return prevPosCS * 0.5 + 0.5;                           //转到[0,1]空间 
         }
 
+        //TAA主逻辑 
         float4 Frag(VaryingsTAA input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -323,23 +335,24 @@ Shader "Hidden/GameOldBoy/TAA"
         #else
             float2 mv = SAMPLE_TEXTURE2D_X(_MotionVectorTexture, sampler_LinearClamp, uv).rg;
         #endif
-            float2 prev_uv = uv - mv - _TAA_Offset;
-            mv = uv - prev_uv;
+            float2 prev_uv = uv - mv - _TAA_Offset;  //_TAA_Offset = 前后2帧，摄像机对应屏幕空间的人为偏移 -> delta_uv 
+            mv = uv - prev_uv;                       //前后2帧中，当前像素点在屏幕中的uv差  
         #else
+            //不开启Unity自带的MotionVector的话，走如下逻辑生成 mv 
             float2 prev_uv = reprojection(depth, input.uv.zw);
-            float2 mv = uv - prev_uv;
+            float2 mv = uv - prev_uv;                //mv的定义 -> 前后2帧中，当前像素点在屏幕中的uv差 
         #endif
         #if _TAA_Use4Tap
             float3 samples;
         #else
             float3 samples[9];
         #endif
-            get_samples(uv, samples);
-            if (prev_uv.x > 1.0 || prev_uv.y > 1.0 || prev_uv.x < 0.0 || prev_uv.y < 0.0)
+            get_samples(uv, samples);  //用当前像素uv采样 cameraColorTarget 
+            if (prev_uv.x > 1.0 || prev_uv.y > 1.0 || prev_uv.x < 0.0 || prev_uv.y < 0.0)  //处理屏幕边界情况 
             {
                 return float4(max(float3(0.0, 0.0, 0.0), filter(samples)), 1.0);
             }
-            float3 prev_color = sample_taa_tex(prev_uv);
+            float3 prev_color = sample_taa_tex(prev_uv); //采样前一帧TAA输出结果(用前一帧对应的uv) -> 得到当前像素对应世界空间位置在前一帧时的颜色 
         #if _TAA_AntiGhosting
             float3 min_color, max_color;
         #if _TAA_Use4Tap
